@@ -4,7 +4,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-  res.send('&#128512; Hello from your GitHub Actions CI/CD App!');
+  res.set('Content-Type', 'text/plain; charset=utf-8');
+  res.send('í¸€ Hello from your GitHub Actions CI/CD App!');
 });
 
 app.listen(port, () => {
