@@ -53,7 +53,7 @@ jobs:
       - name: Echo App Name from ENV
         run: echo "Deploying $APP_NAME"
 
-      - name: Ì¥ê Use GitHub Secret
+      - name: Use GitHub Secret
         run: echo "The secret is ${{ secrets.MY_SECRET_TOKEN }}"
 
 
