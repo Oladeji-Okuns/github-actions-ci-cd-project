@@ -43,9 +43,11 @@ jobs:
           echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
 
       # Step to print the generated commit message.
+      # This step has been slightly re-structured using the '|' (pipe)
+      # for the 'run' command to potentially resolve the "Nested mappings" error.
       - name: Print Commit Message
-        # Accesses the environment variable set in the previous step.
-        run: echo "Last commit message was: $commit_message"
+        run: |
+          echo "Last commit message was: $commit_message"
 
       # Step to set up the Node.js environment.
       - name: Set up Node.js
@@ -74,11 +76,14 @@ jobs:
       - name: Echo App Name from ENV
         run: echo "Deploying $APP_NAME"
 
+      # Conditional step: Only runs if the event is a 'push' to the 'main' branch.
+      - name: Only run on push to main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: echo "This is only running on a push to the main branch!"
+
       # Step to demonstrate using a GitHub Secret without exposing its value in logs.
-      # This is the line (and surrounding block) that was causing the error.
       - name: Use GitHub Secret (without exposing value)
         run: echo "Secret is configured and available"
         # Defines an environment variable specific to this step, populated from a GitHub Secret.
         env:
           MY_SECRET_TOKEN: ${{ secrets.MY_SECRET_TOKEN }}
-
