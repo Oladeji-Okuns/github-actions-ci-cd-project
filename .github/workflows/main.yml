@@ -26,8 +26,8 @@ jobs:
         run: echo "This is only running on a push to the main branch!"
 
       - name: Generate Commit Message
-        id: generate
-        run: echo "commit_message=$(git log -1 --pretty=%B)" >> "$GITHUB_ENV"
+        run: |
+          echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
 
       - name: Print Commit Message
         run: echo "Last commit message was: $commit_message"
