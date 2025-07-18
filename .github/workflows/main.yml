@@ -1,24 +1,21 @@
 name: Node.js CI
 
-# When the workflow should run
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
-# What the workflow does
 jobs:
   build:
     runs-on: ubuntu-latest
 
-#The env variable is defined here
     env:
       APP_NAME: github-actions-ci-cd-app
 
     strategy:
       matrix:
-        node-version: [18.x]  # Test on multiple versions
+        node-version: [18.x]
 
     steps:
       - name: Checkout Code
@@ -28,15 +25,15 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: echo "This is only running on a push to the main branch!"
 
-      - id: generate
+      - name: Generate Commit Message
+        id: generate
         run: |
           echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
 
       - name: Print Commit Message
         run: echo "Last commit message was: ${{ steps.generate.outputs.commit_message }}"
 
-
-      - name: Set up Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
@@ -55,5 +52,4 @@ jobs:
 
       - name: Use GitHub Secret
         run: echo "The secret is ${{ secrets.MY_SECRET_TOKEN }}"
-
 
