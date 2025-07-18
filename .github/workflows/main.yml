@@ -2,9 +2,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
@@ -27,11 +27,10 @@ jobs:
 
       - name: Generate Commit Message
         id: generate
-        run: |
-          echo "commit_message=$(git log -1 --pretty=%B)" >> "$GITHUB_OUTPUT"
+        run: echo "commit_message=$(git log -1 --pretty=%B)" >> "$GITHUB_ENV"
 
       - name: Print Commit Message
-        run: echo "Last commit message was: ${{ steps.generate.outputs.commit_message }}"
+        run: echo "Last commit message was: $commit_message"
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
