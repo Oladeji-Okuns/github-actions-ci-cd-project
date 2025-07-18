@@ -1,53 +1,84 @@
+# Name of the workflow, displayed in the GitHub Actions UI.
 name: Node.js CI
 
+# Defines when the workflow should run.
 on:
+  # Triggers the workflow on pushes to the 'main' branch.
   push:
     branches: [main]
+  # Triggers the workflow on pull requests targeting the 'main' branch.
   pull_request:
     branches: [main]
 
+# Defines the jobs that run in the workflow.
 jobs:
+  # Defines a job named 'build'.
   build:
+    # Specifies the type of runner to use for the job.
     runs-on: ubuntu-latest
 
+    # Defines environment variables for the entire job.
     env:
       APP_NAME: github-actions-ci-cd-app
 
+    # Defines a strategy for running the job with different configurations.
     strategy:
+      # Creates a matrix of configurations.
       matrix:
+        # Specifies Node.js versions to test against.
         node-version: [18.x]
 
+    # Defines the steps within the 'build' job.
     steps:
+      # Step to check out the repository code.
       - name: Checkout Code
-        uses: actions/checkout@v2
+        # Uses the official GitHub action for checking out code.
+        # Updated to v4 for best practices.
+        uses: actions/checkout@v4
 
+      # Step to generate the last commit message and store it as an environment variable.
       - name: Generate Commit Message
+        # Uses a shell command to get the last commit message and append it to GITHUB_ENV.
         run: |
           echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
 
+      # Step to print the generated commit message.
       - name: Print Commit Message
+        # Accesses the environment variable set in the previous step.
         run: echo "Last commit message was: $commit_message"
 
+      # Step to set up the Node.js environment.
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        # Uses the official GitHub action for setting up Node.js.
+        # Updated to v4 for best practices.
+        uses: actions/setup-node@v4
         with:
+          # Specifies the Node.js version from the matrix.
           node-version: ${{ matrix.node-version }}
+          # Caches npm dependencies to speed up subsequent runs.
           cache: 'npm'
 
+      # Step to install project dependencies using npm ci (clean install).
       - name: Install Dependencies
         run: npm ci
 
+      # Step to build the project, if a build script is defined.
       - name: Build Project
         run: npm run build --if-present
 
+      # Step to run tests, if a test script is defined.
       - name: Run Tests
         run: npm test --if-present
 
+      # Step to echo the application name from the job's environment variables.
       - name: Echo App Name from ENV
         run: echo "Deploying $APP_NAME"
 
+      # Step to demonstrate using a GitHub Secret without exposing its value in logs.
+      # This is the line (and surrounding block) that was causing the error.
       - name: Use GitHub Secret (without exposing value)
         run: echo "Secret is configured and available"
+        # Defines an environment variable specific to this step, populated from a GitHub Secret.
         env:
           MY_SECRET_TOKEN: ${{ secrets.MY_SECRET_TOKEN }}
 
