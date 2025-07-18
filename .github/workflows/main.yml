@@ -28,7 +28,7 @@ jobs:
       - name: Generate Commit Message
         id: generate
         run: |
-          echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          echo "commit_message=$(git log -1 --pretty=%B)" >> "$GITHUB_OUTPUT"
 
       - name: Print Commit Message
         run: echo "Last commit message was: ${{ steps.generate.outputs.commit_message }}"
